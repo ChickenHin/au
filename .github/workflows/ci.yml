@@ -31,7 +31,7 @@ jobs:
         cd out
         cmake -Wno-dev -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${EXTRA_CMAKE} ..
         cmake --build . -- -j2
-        ctest --output-on-failure -D ExperimentalBuild -j2
+        ctest --output-on-failure -D ExperimentalBuild -j2 -V
         ctest --output-on-failure -D ExperimentalTest -j2 -V
         [[ -z "${GCOV}" ]] || find . -type f -name '*.gcno' -exec ${GCOV} -pabcfu '{}' +
     # - name: Codecov Upload
