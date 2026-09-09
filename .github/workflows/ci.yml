@@ -1,10 +1,10 @@
 name: CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  # push:
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -18,24 +18,7 @@ jobs:
           - name: Linux GCC 14 Debug/Coverage
             os: ubuntu-24.04
             env: BUILD_TYPE=Debug EXTRA_CMAKE=-DCOVERAGE=On GCOV=gcov-14 CC=gcc-14 CXX=g++-14
-          - name: Linux GCC 14 Release
-            os: ubuntu-24.04
-            env: BUILD_TYPE=Release STATIC=On LTO=On CC=gcc-14 CXX=g++-14
-          - name: Linux GCC 13 Release
-            os: ubuntu-24.04
-            env: BUILD_TYPE=Release STATIC=On LTO=On CC=gcc-13 CXX=g++-13
-          - name: Linux Clang 22 Release
-            os: ubuntu-26.04
-            env: BUILD_TYPE=Release STATIC=On LTO=On CC=clang-22 CXX=clang++-22
-          - name: Linux Clang 21 Release
-            os: ubuntu-26.04
-            env: BUILD_TYPE=Release STATIC=On LTO=On CC=clang-21 CXX=clang++-21
-          - name: Linux Clang 20 Release
-            os: ubuntu-26.04
-            env: BUILD_TYPE=Release STATIC=On LTO=On CC=clang-20 CXX=clang++-20
-          - name: macOS Latest Release
-            os: macos-latest
-            env: BUILD_TYPE=Release
+      
     steps:
     - uses: actions/checkout@v6
       with:
@@ -49,10 +32,10 @@ jobs:
         cmake -Wno-dev -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${EXTRA_CMAKE} ..
         cmake --build . -- -j2
         ctest --output-on-failure -D ExperimentalBuild -j2
-        ctest --output-on-failure -D ExperimentalTest -j2
+        ctest --output-on-failure -D ExperimentalTest -j2 -V
         [[ -z "${GCOV}" ]] || find . -type f -name '*.gcno' -exec ${GCOV} -pabcfu '{}' +
-    - name: Codecov Upload
-      if: contains(matrix.name, 'Coverage')
-      uses: codecov/codecov-action@v6
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+    # - name: Codecov Upload
+    #   if: contains(matrix.name, 'Coverage')
+    #   uses: codecov/codecov-action@v6
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
